@@ -63,6 +63,9 @@ class DefaultFirebaseOptions {
     messagingSenderId: '181711587556',
     projectId: 'proyectoc1-2a690',
     storageBucket: 'proyectoc1-2a690.firebasestorage.app',
+    androidClientId: '181711587556-lvob2vol2m9otma5g54jbb425b8crt57.apps.googleusercontent.com',
+    iosClientId: '181711587556-19fu4pdukg7ua19pkag7q8auc291isda.apps.googleusercontent.com',
     iosBundleId: 'com.example.firtsApp',
   );
+
 }
