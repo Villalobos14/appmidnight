@@ -11,6 +11,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   bool _obscurePassword = true;
   bool _isLoading = false;
+  final AuthService authService = AuthService();
   
   // Controladores para los campos de texto
   final TextEditingController _emailController = TextEditingController();
@@ -26,52 +27,52 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // Función para login con email/password
   void _handleEmailLogin() async {
-    if (!_formKey.currentState!.validate()) return;
+    // if (!_formKey.currentState!.validate()) return;
 
-    setState(() => _isLoading = true);
-    try {
-      final user = await AuthService().signInWithEmailAndPassword(
-        _emailController.text.trim(),
-        _passwordController.text,
-      );
+    // setState(() => _isLoading = true);
+    // try {
+    //   final user = await AuthService().signInWithEmailAndPassword(
+    //     _emailController.text.trim(),
+    //     _passwordController.text,
+    //   );
       
-      if (user != null && mounted) {
-        Navigator.pushReplacementNamed(context, '/products');
-      } else {
-        _showErrorMessage("Credenciales incorrectas");
-      }
-    } catch (e) {
-      _showErrorMessage("Error en el login: $e");
-    } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
-    }
+    //   if (user != null && mounted) {
+    //     Navigator.pushReplacementNamed(context, '/products');
+    //   } else {
+    //     _showErrorMessage("Credenciales incorrectas");
+    //   }
+    // } catch (e) {
+    //   _showErrorMessage("Error en el login: $e");
+    // } finally {
+    //   if (mounted) {
+    //     setState(() => _isLoading = false);
+    //   }
+    // }
   }
 
   // Función para registro
   void _handleRegister() async {
-    if (!_formKey.currentState!.validate()) return;
+    // if (!_formKey.currentState!.validate()) return;
 
-    setState(() => _isLoading = true);
-    try {
-      final user = await AuthService().registerWithEmailAndPassword(
-        _emailController.text.trim(),
-        _passwordController.text,
-      );
+    // setState(() => _isLoading = true);
+    // try {
+    //   final user = await AuthService().registerWithEmailAndPassword(
+    //     _emailController.text.trim(),
+    //     _passwordController.text,
+    //   );
       
-      if (user != null && mounted) {
-        Navigator.pushReplacementNamed(context, '/products');
-      } else {
-        _showErrorMessage("Error al crear la cuenta");
-      }
-    } catch (e) {
-      _showErrorMessage("Error en el registro: $e");
-    } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
-    }
+    //   if (user != null && mounted) {
+    //     Navigator.pushReplacementNamed(context, '/products');
+    //   } else {
+    //     _showErrorMessage("Error al crear la cuenta");
+    //   }
+    // } catch (e) {
+    //   _showErrorMessage("Error en el registro: $e");
+    // } finally {
+    //   if (mounted) {
+    //     setState(() => _isLoading = false);
+    //   }
+    // }
   }
 
   // Login temporal sin autenticación (para testing)
@@ -277,8 +278,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 _socialButton(
                   icon: Icons.g_mobiledata,
                   label: "Continue with Google (Próximamente)",
-                  onTap: () {
-                    _showErrorMessage("Google login próximamente");
+                  onTap: ()async {
+                    final user = await authService.signInWithGoogle();
                   },
                 ),
                 const SizedBox(height: 12),
