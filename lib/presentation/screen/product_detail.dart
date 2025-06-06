@@ -13,7 +13,8 @@ class ProductDetailScreen extends StatefulWidget {
   State<ProductDetailScreen> createState() => _ProductDetailScreenState();
 }
 
-class _ProductDetailScreenState extends State<ProductDetailScreen> with TickerProviderStateMixin {
+class _ProductDetailScreenState extends State<ProductDetailScreen>
+    with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
@@ -28,17 +29,20 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with TickerPr
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
-    
+
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: const Interval(0.0, 0.6, curve: Curves.easeOut)),
+      CurvedAnimation(
+          parent: _animationController, curve: const Interval(0.0, 0.6, curve: Curves.easeOut)),
     );
-    
+
     _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: const Interval(0.2, 0.8, curve: Curves.elasticOut)),
+      CurvedAnimation(
+          parent: _animationController, curve: const Interval(0.2, 0.8, curve: Curves.elasticOut)),
     );
-    
+
     _slideAnimation = Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero).animate(
-      CurvedAnimation(parent: _animationController, curve: const Interval(0.3, 1.0, curve: Curves.easeOutBack)),
+      CurvedAnimation(
+          parent: _animationController, curve: const Interval(0.3, 1.0, curve: Curves.easeOutBack)),
     );
 
     _animationController.forward();
@@ -54,9 +58,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with TickerPr
     for (int i = 0; i < _quantity; i++) {
       Cart.add(widget.product);
     }
-    
+
     HapticFeedback.mediumImpact();
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
@@ -160,7 +164,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with TickerPr
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
-            // Product Image
+            // Imagen del producto (animada con ScaleTransition)
             SliverToBoxAdapter(
               child: ScaleTransition(
                 scale: _scaleAnimation,
@@ -191,7 +195,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with TickerPr
                             color: const Color(0xFF007AFF),
                             strokeWidth: 3,
                             value: loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!
                                 : null,
                           ),
                         );
@@ -205,8 +210,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with TickerPr
                 ),
               ),
             ),
-            
-            // Product Details
+
+            // Detalles del producto (animados con SlideTransition)
             SliverToBoxAdapter(
               child: SlideTransition(
                 position: _slideAnimation,
@@ -228,7 +233,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with TickerPr
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Category Badge
+                      // Badge de categoría
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
@@ -246,10 +251,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with TickerPr
                           ),
                         ),
                       ),
-                      
+
                       const SizedBox(height: 16),
-                      
-                      // Product Title
+
+                      // Título del producto
                       Text(
                         widget.product.title,
                         style: const TextStyle(
@@ -259,19 +264,19 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with TickerPr
                           height: 1.2,
                         ),
                       ),
-                      
+
                       const SizedBox(height: 12),
-                      
-                      // Rating and Reviews
+
+                      // Calificación y número de reviews
                       Row(
                         children: [
                           Row(
                             children: List.generate(5, (index) {
                               return Icon(
-                                index < widget.product.rating.rate.floor() 
-                                    ? Icons.star_rounded 
-                                    : index < widget.product.rating.rate 
-                                        ? Icons.star_half_rounded 
+                                index < widget.product.rating.rate.floor()
+                                    ? Icons.star_rounded
+                                    : index < widget.product.rating.rate
+                                        ? Icons.star_half_rounded
                                         : Icons.star_outline_rounded,
                                 color: Colors.amber,
                                 size: 20,
@@ -297,22 +302,22 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with TickerPr
                           ),
                         ],
                       ),
-                      
+
                       const SizedBox(height: 20),
-                      
-                      // Price
+
+                      // *** Aquí corregimos la interpolación del precio ***
                       Text(
-                        '\${widget.product.price.toStringAsFixed(2)}',
+                        '\$${widget.product.price.toStringAsFixed(2)}',
                         style: const TextStyle(
                           color: Color(0xFF007AFF),
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      
+
                       const SizedBox(height: 24),
-                      
-                      // Quantity Selector
+
+                      // Selector de cantidad
                       Row(
                         children: [
                           const Text(
@@ -333,10 +338,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with TickerPr
                             child: Row(
                               children: [
                                 IconButton(
-                                  onPressed: _quantity > 1 ? () {
-                                    setState(() => _quantity--);
-                                    HapticFeedback.selectionClick();
-                                  } : null,
+                                  onPressed: _quantity > 1
+                                      ? () {
+                                          setState(() => _quantity--);
+                                          HapticFeedback.selectionClick();
+                                        }
+                                      : null,
                                   icon: const Icon(Icons.remove_rounded, color: Colors.white),
                                 ),
                                 Container(
@@ -363,10 +370,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with TickerPr
                           ),
                         ],
                       ),
-                      
+
                       const SizedBox(height: 24),
-                      
-                      // Description
+
+                      // Descripción expandible
                       GestureDetector(
                         onTap: () {
                           setState(() => _isExpanded = !_isExpanded);
@@ -419,8 +426,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with TickerPr
                                     height: 1.5,
                                   ),
                                 ),
-                                crossFadeState: _isExpanded 
-                                    ? CrossFadeState.showSecond 
+                                crossFadeState: _isExpanded
+                                    ? CrossFadeState.showSecond
                                     : CrossFadeState.showFirst,
                                 duration: const Duration(milliseconds: 300),
                               ),
@@ -428,10 +435,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with TickerPr
                           ),
                         ),
                       ),
-                      
+
                       const SizedBox(height: 32),
-                      
-                      // Add to Cart Button
+
+                      // *** Aquí también corregimos la interpolación en el botón “Add to Cart” ***
                       Container(
                         width: double.infinity,
                         height: 56,
@@ -466,7 +473,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with TickerPr
                               const Icon(Icons.shopping_bag_outlined, size: 24),
                               const SizedBox(width: 12),
                               Text(
-                                'Add to Cart • \${(widget.product.price * _quantity).toStringAsFixed(2)}',
+                                // Interpolación corregida: \$ para mostrar el signo de dólar + el total
+                                'Add to Cart • \$${(widget.product.price * _quantity).toStringAsFixed(2)}',
                                 style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600,
@@ -481,8 +489,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with TickerPr
                 ),
               ),
             ),
-            
-            // Bottom padding for iPhone 16 Pro
+
+            // Espacio inferior para SafeArea
             const SliverToBoxAdapter(
               child: SizedBox(height: 120),
             ),

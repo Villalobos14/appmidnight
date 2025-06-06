@@ -13,7 +13,8 @@ class ProductListScreen extends StatefulWidget {
   State<ProductListScreen> createState() => _ProductListScreenState();
 }
 
-class _ProductListScreenState extends State<ProductListScreen> with TickerProviderStateMixin {
+class _ProductListScreenState extends State<ProductListScreen>
+    with TickerProviderStateMixin {
   late Future<List<Product>> _futureProducts;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -26,7 +27,7 @@ class _ProductListScreenState extends State<ProductListScreen> with TickerProvid
   void initState() {
     super.initState();
     _futureProducts = ProductService().fetchProducts();
-    
+
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
@@ -34,7 +35,7 @@ class _ProductListScreenState extends State<ProductListScreen> with TickerProvid
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
-    
+
     _loadProducts();
   }
 
@@ -54,15 +55,19 @@ class _ProductListScreenState extends State<ProductListScreen> with TickerProvid
       });
       _animationController.forward();
     } catch (e) {
-      // Handle error
+      // Manejar error si es necesario
     }
   }
 
   void _filterProducts() {
     setState(() {
       _filteredProducts = _allProducts.where((product) {
-        final matchesSearch = product.title.toLowerCase().contains(_searchController.text.toLowerCase());
-        final matchesCategory = _selectedCategory == 'All' || product.category.toLowerCase() == _selectedCategory.toLowerCase();
+        final matchesSearch = product.title
+            .toLowerCase()
+            .contains(_searchController.text.toLowerCase());
+        final matchesCategory = _selectedCategory == 'All' ||
+            product.category.toLowerCase() ==
+                _selectedCategory.toLowerCase();
         return matchesSearch && matchesCategory;
       }).toList();
     });
@@ -77,7 +82,7 @@ class _ProductListScreenState extends State<ProductListScreen> with TickerProvid
   void _addToCart(Product product) {
     Cart.add(product);
     HapticFeedback.lightImpact();
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
@@ -138,7 +143,8 @@ class _ProductListScreenState extends State<ProductListScreen> with TickerProvid
               },
               icon: Stack(
                 children: [
-                  const Icon(Icons.shopping_bag_outlined, color: Colors.white, size: 24),
+                  const Icon(Icons.shopping_bag_outlined,
+                      color: Colors.white, size: 24),
                   if (Cart.items.isNotEmpty)
                     Positioned(
                       right: 0,
@@ -263,8 +269,10 @@ class _ProductListScreenState extends State<ProductListScreen> with TickerProvid
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF007AFF),
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16)),
               ),
             ),
           ],
@@ -306,7 +314,7 @@ class _ProductListScreenState extends State<ProductListScreen> with TickerProvid
       child: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
-          // Search and Filters
+          // Búsqueda y filtros
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
@@ -320,8 +328,8 @@ class _ProductListScreenState extends State<ProductListScreen> with TickerProvid
               ),
             ),
           ),
-          
-          // Products Grid
+
+          // Grid de productos con childAspectRatio = 0.60
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             sliver: _filteredProducts.isEmpty
@@ -329,20 +337,22 @@ class _ProductListScreenState extends State<ProductListScreen> with TickerProvid
                     child: _buildNoResultsState(),
                   )
                 : SliverGrid(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      childAspectRatio: 0.75,
+                      childAspectRatio: 0.60, // Ahora más alto que antes
                       crossAxisSpacing: 16,
                       mainAxisSpacing: 20,
                     ),
                     delegate: SliverChildBuilderDelegate(
-                      (context, index) => _buildProductCard(_filteredProducts[index], index),
+                      (context, index) =>
+                          _buildProductCard(_filteredProducts[index], index),
                       childCount: _filteredProducts.length,
                     ),
                   ),
           ),
-          
-          // Bottom padding for iPhone 16 Pro
+
+          // Padding inferior
           const SliverToBoxAdapter(
             child: SizedBox(height: 120),
           ),
@@ -367,7 +377,8 @@ class _ProductListScreenState extends State<ProductListScreen> with TickerProvid
           hintStyle: TextStyle(color: Colors.grey[500], fontSize: 16),
           prefixIcon: Icon(Icons.search_rounded, color: Colors.grey[500]),
           border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         ),
       ),
     );
@@ -383,9 +394,10 @@ class _ProductListScreenState extends State<ProductListScreen> with TickerProvid
         itemBuilder: (context, index) {
           final category = _categories[index];
           final isSelected = category == _selectedCategory;
-          
+
           return Container(
-            margin: EdgeInsets.only(right: index == _categories.length - 1 ? 0 : 12),
+            margin: EdgeInsets.only(
+                right: index == _categories.length - 1 ? 0 : 12),
             child: GestureDetector(
               onTap: () {
                 setState(() => _selectedCategory = category);
@@ -394,12 +406,17 @@ class _ProductListScreenState extends State<ProductListScreen> with TickerProvid
               },
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 decoration: BoxDecoration(
-                  color: isSelected ? const Color(0xFF007AFF) : const Color(0xFF1C1C1E),
+                  color: isSelected
+                      ? const Color(0xFF007AFF)
+                      : const Color(0xFF1C1C1E),
                   borderRadius: BorderRadius.circular(22),
                   border: Border.all(
-                    color: isSelected ? const Color(0xFF007AFF) : Colors.white.withOpacity(0.1),
+                    color: isSelected
+                        ? const Color(0xFF007AFF)
+                        : Colors.white.withOpacity(0.1),
                   ),
                 ),
                 child: Text(
@@ -450,12 +467,11 @@ class _ProductListScreenState extends State<ProductListScreen> with TickerProvid
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Product Image
-                Expanded(
-                  flex: 3,
+                // ── Imagen con AspectRatio cuadrado ───────────────
+                AspectRatio(
+                  aspectRatio: 1, // zona cuadrada para la imagen
                   child: Container(
-                    width: double.infinity,
-                    margin: const EdgeInsets.all(12),
+                    margin: const EdgeInsets.all(8), // margen reducido
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.05),
                       borderRadius: BorderRadius.circular(16),
@@ -471,90 +487,99 @@ class _ProductListScreenState extends State<ProductListScreen> with TickerProvid
                             child: CircularProgressIndicator(
                               color: const Color(0xFF007AFF),
                               strokeWidth: 2,
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
-                                  : null,
+                              value:
+                                  loadingProgress.expectedTotalBytes != null
+                                      ? loadingProgress
+                                              .cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes!
+                                      : null,
                             ),
                           );
                         },
                         errorBuilder: (context, error, stackTrace) => Container(
                           color: Colors.grey[800],
-                          child: const Icon(Icons.image_not_supported, color: Colors.grey, size: 32),
+                          child: const Icon(Icons.image_not_supported,
+                              color: Colors.grey, size: 32),
                         ),
                       ),
                     ),
                   ),
                 ),
-                
-                // Product Info
-                Expanded(
-                  flex: 3,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          product.title,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                            height: 1.2,
+
+                // ── Sección de información (padding reducido) ──────
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Título (hasta 2 líneas)
+                      Text(
+                        product.title,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          height: 1.2,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 8),
+
+                      // Rating (icono + número + conteo)
+                      Row(
+                        children: [
+                          const Icon(Icons.star_rounded,
+                              color: Colors.amber, size: 14),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${product.rating.rate}',
+                            style: TextStyle(
+                                color: Colors.grey[400], fontSize: 13),
                           ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            const Icon(Icons.star_rounded, color: Colors.amber, size: 14),
-                            const SizedBox(width: 4),
-                            Text(
-                              '${product.rating.rate}',
-                              style: TextStyle(color: Colors.grey[400], fontSize: 13),
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              '(${product.rating.count})',
-                              style: TextStyle(color: Colors.grey[600], fontSize: 11),
-                            ),
-                          ],
-                        ),
-                        const Spacer(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                '\${product.price.toStringAsFixed(2)}',
-                                style: const TextStyle(
-                                  color: Color(0xFF007AFF),
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                          const SizedBox(width: 6),
+                          Text(
+                            '(${product.rating.count})',
+                            style: TextStyle(
+                                color: Colors.grey[600], fontSize: 11),
+                          ),
+                        ],
+                      ),
+                      // <--- Eliminé el SizedBox(height:12) aquí
+                      
+                      // Precio y botón de agregar
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              '\$${product.price.toStringAsFixed(2)}',
+                              style: const TextStyle(
+                                color: Color(0xFF007AFF),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                            GestureDetector(
-                              onTap: () => _addToCart(product),
-                              child: Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF007AFF),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: const Icon(
-                                  Icons.add_rounded,
-                                  color: Colors.white,
-                                  size: 18,
-                                ),
+                          ),
+                          GestureDetector(
+                            onTap: () => _addToCart(product),
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF007AFF),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Icon(
+                                Icons.add_rounded,
+                                color: Colors.white,
+                                size: 18,
                               ),
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ],
