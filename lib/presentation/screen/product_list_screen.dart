@@ -20,11 +20,11 @@ class _ProductListScreenState extends State<ProductListScreen>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   final TextEditingController _searchController = TextEditingController();
-  final AuthService _authService = AuthService();  // ← AGREGADO
+  final AuthService _authService = AuthService();  
   List<Product> _allProducts = [];
   List<Product> _filteredProducts = [];
   String _selectedCategory = 'All';
-  bool _isLoggingOut = false;  // ← AGREGADO
+  bool _isLoggingOut = false;  
 
   @override
   void initState() {
