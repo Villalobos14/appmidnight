@@ -11,18 +11,13 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # Solo Firebase - SIN Google Sign-In por ahora
-  firebase_core: 2.24.0
-  firebase_auth: 4.15.0
+  # Versiones más recientes que son compatibles
+  firebase_core: ^3.13.1
+  firebase_auth: ^5.5.4
   google_sign_in: ^6.2.1
 
-  # HTTP
   http: ^0.13.6
-
-  # Local storage
   shared_preferences: ^2.2.0
-
-  # UI
   cupertino_icons: ^1.0.8
 
 dev_dependencies:

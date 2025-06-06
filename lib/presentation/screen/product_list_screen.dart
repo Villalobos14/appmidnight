@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import '../../../data/services/product_service.dart';
 import '../../../data/models/product_model.dart';
 import '../../../data/services/cart_service.dart';
+import '../../../data/services/auth_service.dart';  // ← AGREGADO
 import 'product_detail.dart';
 import 'cart_screen.dart';
 
@@ -19,9 +20,11 @@ class _ProductListScreenState extends State<ProductListScreen>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   final TextEditingController _searchController = TextEditingController();
+  final AuthService _authService = AuthService();  // ← AGREGADO
   List<Product> _allProducts = [];
   List<Product> _filteredProducts = [];
   String _selectedCategory = 'All';
+  bool _isLoggingOut = false;  // ← AGREGADO
 
   @override
   void initState() {
@@ -61,7 +64,7 @@ class _ProductListScreenState extends State<ProductListScreen>
 
   void _filterProducts() {
     setState(() {
-      _filteredProducts = _allProducts.where((product) {
+      _filteredProducts = _allProducts.where((product) {  // ← CORREGIDO (era *filteredProducts)
         final matchesSearch = product.title
             .toLowerCase()
             .contains(_searchController.text.toLowerCase());
@@ -106,6 +109,70 @@ class _ProductListScreenState extends State<ProductListScreen>
     );
   }
 
+  // ← FUNCIÓN DE LOGOUT AGREGADA
+  void _handleLogout() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: const Color(0xFF1C1C1E),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: const Text(
+            'Sign Out',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          content: const Text(
+            'Are you sure you want to sign out?',
+            style: TextStyle(color: Colors.grey),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Color(0xFF007AFF)),
+              ),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.pop(context);
+                setState(() => _isLoggingOut = true);
+                
+                try {
+                  await _authService.signOut();
+                  if (mounted) {
+                    Navigator.pushNamedAndRemoveUntil(
+                      context, 
+                      '/', 
+                      (route) => false,
+                    );
+                  }
+                } catch (e) {
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Error signing out: $e'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                } finally {
+                  if (mounted) {
+                    setState(() => _isLoggingOut = false);
+                  }
+                }
+              },
+              child: const Text(
+                'Sign Out',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -127,8 +194,9 @@ class _ProductListScreenState extends State<ProductListScreen>
         centerTitle: false,
         automaticallyImplyLeading: false,
         actions: [
+          // Botón del carrito (original)
           Container(
-            margin: const EdgeInsets.only(right: 16),
+            margin: const EdgeInsets.only(right: 8),  // ← CAMBIADO de 16 a 8
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.1),
               borderRadius: BorderRadius.circular(16),
@@ -167,6 +235,33 @@ class _ProductListScreenState extends State<ProductListScreen>
                     ),
                 ],
               ),
+            ),
+          ),
+
+          // ← BOTÓN DE LOGOUT AGREGADO
+          Container(
+            margin: const EdgeInsets.only(right: 16),
+            decoration: BoxDecoration(
+              color: Colors.red.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: Colors.red.withOpacity(0.3)),
+            ),
+            child: IconButton(
+              onPressed: _isLoggingOut ? null : _handleLogout,
+              icon: _isLoggingOut 
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.red,
+                      ),
+                    )
+                  : const Icon(
+                      Icons.logout_rounded, 
+                      color: Colors.red, 
+                      size: 24
+                    ),
             ),
           ),
         ],
@@ -346,7 +441,7 @@ class _ProductListScreenState extends State<ProductListScreen>
                     ),
                     delegate: SliverChildBuilderDelegate(
                       (context, index) =>
-                          _buildProductCard(_filteredProducts[index], index),
+                          _buildProductCard(_filteredProducts[index], index),  // ← CORREGIDO (era *buildProductCard)
                       childCount: _filteredProducts.length,
                     ),
                   ),
